@@ -7,16 +7,32 @@ let checkStr = () =>{
     return result;
 }
 
-module.exports.initApp = (app , urlParser , json) =>{
-    app.use(urlParser);
-    app.use(json);
-    app.set('view engine','ejs');
-};
-module.exports.listen = (app) =>{
-    //PORT
-    const port = process.env.port || 3000;
-    app.listen(port, () => {
-        console.log('Listening on port ' + port);
+var addListeners = (app) => {
+    app.get('/main',(req ,res) => {
+        res.render('index',{name : ''});
+     });
+     app.get('/add', (req , res)=>{
+        res.render('index',{name : ''});
     });
-    console.log('127.0.0.1:'+port);
+    app.post('/add', (req , res)=>{   
+        MongoClient.connect((err ,client) => {
+            if(err){
+                return console.log(err);
+            }
+            const db = client.db("test");
+            const collection = db.collection("users");
+            collection.insertOne({name: req.body.name}, (err ,res) =>{
+                if(err){
+                    return console.log(err);
+                }
+                console.log(res.ops);
+            });
+        
+        
+            client.close();
+        });
+        res.render('index',{name : req.body.name});
+    });   
 };
+
+module.exports.addListeners = addListeners;

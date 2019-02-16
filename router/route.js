@@ -26,8 +26,7 @@ class Router{
                  client.close();
              });
              res.render('index',{name : req.body.name});
-         });
-;       
+         });    
     }
 }
 

@@ -16,8 +16,17 @@ const ext = require('./funcs.js');
 
 
 let app = express();
-ext.initApp(app , urlParser , express.json);
-let Router = new route.Router().add(app , MongoClient , urlParser);
-ext.listen(app);
+app.use(urlParser);
+app.use(express.json());
+app.set('view engine','ejs');
+
+ext.addListeners(app);
+ 
 
 
+
+const port = process.env.port || 3000;
+    app.listen(port, () => {
+        console.log('Listening on port ' + port);
+    });
+    console.log('127.0.0.1:'+port);
